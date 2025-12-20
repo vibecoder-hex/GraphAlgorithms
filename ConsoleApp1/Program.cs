@@ -23,13 +23,10 @@ namespace ConsoleApp1
         }
     }
 
-    public class DistanceGraphProcessing
+    public static class DistanceGraphProcessing
     {
-        private Dictionary<string, Dictionary<string, int>> _graph = new Dictionary<string, Dictionary<string, int>>();
 
-        public DistanceGraphProcessing(Dictionary<string, Dictionary<string, int>> GraphStructure) => _graph = GraphStructure;
-
-        private List<string> reconstructPath(string start, string target, Dictionary<string, string> parents)
+        private static List<string> reconstructPath(string start, string target, Dictionary<string, string> parents)
         {
             List<string> output = new List<string>();
             string current = target;
@@ -43,20 +40,20 @@ namespace ConsoleApp1
             return output;
         }
 
-        private void dfsRecursive(string currentVertex, List<string> output, HashSet<string> visited)
+        private static void dfsRecursive(Dictionary<string, Dictionary<string, int>> graph, string currentVertex, List<string> output, HashSet<string> visited)
         {
             visited.Add(currentVertex);
             output.Add(currentVertex);
-            foreach (var neighbour in _graph[currentVertex])
+            foreach (var neighbour in graph[currentVertex])
             {
                 if (!visited.Contains(neighbour.Key))
                 {
-                    dfsRecursive(neighbour.Key, output, visited);
+                    dfsRecursive(graph, neighbour.Key, output, visited);
                 }
             }
         }
 
-        public List<string> BfsTraversal(string start, string target)
+        public static List<string> BfsTraversal(Dictionary<string, Dictionary<string, int>> graph, string start, string target)
         {
             if (start == target) return new List<string>(){start};
 
@@ -77,7 +74,7 @@ namespace ConsoleApp1
                     return output;
                 }
 
-                foreach (var neighbour in _graph[currentVertex])
+                foreach (var neighbour in graph[currentVertex])
                 {
                     if (!visited.Contains(neighbour.Key))
                     {
@@ -91,20 +88,20 @@ namespace ConsoleApp1
             return new List<string>();
         }
 
-        public List<string> DfsTraversal(string start)
+        public static List<string> DfsTraversal(Dictionary<string, Dictionary<string, int>> graph, string start)
         {
             List<string> output = new List<string>();
             HashSet<string> visited = new HashSet<string>();
-            dfsRecursive(start, output, visited);
+            dfsRecursive(graph, start, output, visited);
             return output;
         }
 
-        public List<string> DijkstraShortestPath(string start, string target)
+        public static List<string> DijkstraShortestPath(Dictionary<string, Dictionary<string, int>> graph, string start, string target)
         {
             PriorityQueue<string, int> priorityQueue = new PriorityQueue<string, int>();
             Dictionary<string, string> parent = new Dictionary<string, string>();
 
-            var distances = _graph.Keys.ToDictionary(vertexVal => vertexVal, weight => int.MaxValue);
+            var distances = graph.Keys.ToDictionary(vertexVal => vertexVal, weight => int.MaxValue);
 
             priorityQueue.Enqueue(start, 0);
             distances[start] = 0;
@@ -113,7 +110,7 @@ namespace ConsoleApp1
             {
                 if (currentDist > distances[currentValue]) continue;
 
-                foreach(var (neighbour, weight) in _graph[currentValue])
+                foreach(var (neighbour, weight) in graph[currentValue])
                 {
                     int newDistance = currentDist + weight;
                     if (newDistance < distances[neighbour])
@@ -135,23 +132,23 @@ namespace ConsoleApp1
 
         public static void GraphTraversal(DistanceData jsonData, string algorithm)
         {
-            DistanceGraphProcessing graphProcessing = new DistanceGraphProcessing(jsonData.Distances);
+            Dictionary<string, Dictionary<string, int>> graph = jsonData.Distances;
             string? startVertex = Console.ReadLine();
             switch (algorithm)
             {
                 case "bfs":
                     {
                         string? targetVertex = Console.ReadLine();
-                        graphProcessing.BfsTraversal(startVertex, targetVertex).ForEach(vertex => Console.Write($"{vertex} "));
+                        DistanceGraphProcessing.BfsTraversal(graph, startVertex, targetVertex).ForEach(vertex => Console.Write($"{vertex} "));
                         break;
                     }
                 case "dfs":
-                    graphProcessing.DfsTraversal(startVertex).ForEach(vertex => Console.Write($"{vertex} "));
+                    DistanceGraphProcessing.DfsTraversal(graph, startVertex).ForEach(vertex => Console.Write($"{vertex} "));
                     break;
                 case "dijkstra":
                     {
                         string? targetVertex = Console.ReadLine();
-                        graphProcessing.DijkstraShortestPath(startVertex, targetVertex).ForEach(vertex => Console.Write($"{vertex} "));
+                        DistanceGraphProcessing.DijkstraShortestPath(graph, startVertex, targetVertex).ForEach(vertex => Console.Write($"{vertex} "));
                         break;
                     }
 
