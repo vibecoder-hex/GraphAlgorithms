@@ -6,10 +6,12 @@ using System.Text.Json;
 
 namespace ConsoleApp1
 {
-    public record DistanceData(Dictionary<string, Dictionary<string, int>> Distances);
+    // JSON data series
+    public record DistanceData(Dictionary<string, Dictionary<string, int>> Distances); 
 
 
-    public static class DistanceDataLoader
+    // Loading JSON from file and deserializing class
+    public static class DistanceDataLoader 
     {
         public static DistanceData JsonLoadFromFile(string filename)
         {
@@ -23,10 +25,14 @@ namespace ConsoleApp1
         }
     }
 
-    public static class DistanceGraphProcessing
+    // Basic graph algorithms implementations
+    // 1. Depth-First-search
+    // 2. Breadth-First-search
+    // 3. Dijktra
+    public static class DistanceGraphProcessing 
     {
-
-        private static List<string> reconstructPath(string start, string target, Dictionary<string, string> parents)
+        // Reconstruct shortest path from 
+        private static List<string> reconstructPath(string start, string target, Dictionary<string, string> parents) 
         {
             List<string> output = new List<string>();
             string current = target;
@@ -40,6 +46,7 @@ namespace ConsoleApp1
             return output;
         }
 
+        // Recursive Depth fisrt search function
         private static void dfsRecursive(Dictionary<string, Dictionary<string, int>> graph, string currentVertex, List<string> output, HashSet<string> visited)
         {
             visited.Add(currentVertex);
@@ -124,16 +131,17 @@ namespace ConsoleApp1
             List<string> resultPath = reconstructPath(start, target, parent);
             return resultPath;
         }
-
     }
 
     class Program
     {
 
+        // Graph algorithm selection by command line argument
         public static void GraphTraversal(DistanceData jsonData, string algorithm)
         {
-            Dictionary<string, Dictionary<string, int>> graph = jsonData.Distances;
+            var graph = jsonData.Distances;
             string? startVertex = Console.ReadLine();
+
             switch (algorithm)
             {
                 case "bfs":
@@ -151,7 +159,6 @@ namespace ConsoleApp1
                         DistanceGraphProcessing.DijkstraShortestPath(graph, startVertex, targetVertex).ForEach(vertex => Console.Write($"{vertex} "));
                         break;
                     }
-
             }
         }
 
@@ -159,6 +166,8 @@ namespace ConsoleApp1
         {
             try
             {
+                // Reading filename and algorithm name strings
+                // Loading data from JSON and deserializing
                 string? filename = args[0], algorithm = args[1];
                 var jsonData = DistanceDataLoader.JsonLoadFromFile(filename);
                 GraphTraversal(jsonData, algorithm);
