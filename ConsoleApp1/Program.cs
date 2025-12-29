@@ -31,7 +31,7 @@ namespace ConsoleApp1
     // 3. Dijktra
     public static class DistanceGraphProcessing 
     {
-        // Reconstruct shortest path from 
+        // Reconstruct shortest path
         private static List<string> reconstructPath(string start, string target, Dictionary<string, string> parents) 
         {
             List<string> output = new List<string>();
@@ -188,11 +188,16 @@ namespace ConsoleApp1
                 Console.WriteLine("Command is incorrect");
                 return;
             }
+            catch (KeyNotFoundException)
+            {
+                Console.WriteLine("Vertex not found in dictionary");
+                return;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return;
-            } 
+            }
         }
     }
 }
