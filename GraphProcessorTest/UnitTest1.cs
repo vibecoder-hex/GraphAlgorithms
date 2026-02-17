@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Xunit;
+﻿
 using Src.GraphProcessor;
 
 namespace GraphProcessorTest
@@ -232,7 +230,7 @@ namespace GraphProcessorTest
 
         [Theory]
         [MemberData(nameof(GetGraphTestData))]
-        public void DijkstraTest(Dictionary<string, Dictionary<string,int>> graph)
+        public void AlgorithmTests(Dictionary<string, Dictionary<string, int>> graph)
         {
             var vertexCount = graph.Count;
             var edgeCount = graph.Values.Sum(pair => pair.Count);
