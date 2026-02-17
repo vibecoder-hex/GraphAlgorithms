@@ -1,11 +1,17 @@
-﻿
-using Src.GraphProcessor;
+﻿using Src.GraphProcessor;
+using Xunit.Abstractions;
 
 namespace GraphProcessorTest
 {
-    public class UnitTest1
+    public class AlgorithmTestClass
     {
         // Статический метод с 20 тестовыми графами
+        private readonly ITestOutputHelper _output;
+
+        public AlgorithmTestClass(ITestOutputHelper output)
+        {
+            _output = output;
+        }
         public static IEnumerable<object[]> GetGraphTestData()
         {
             // 1. Простой граф
@@ -230,11 +236,11 @@ namespace GraphProcessorTest
 
         [Theory]
         [MemberData(nameof(GetGraphTestData))]
-        public void AlgorithmTests(Dictionary<string, Dictionary<string, int>> graph)
+        public void AlgorithmTesting(Dictionary<string, Dictionary<string, int>> graph)
         {
             var vertexCount = graph.Count;
             var edgeCount = graph.Values.Sum(pair => pair.Count);
-            Console.WriteLine($"Starting testing on graph with {vertexCount} vertexes and {edgeCount} edges");
+            _output.WriteLine($"Starting testing on graph with {vertexCount} vertexes and {edgeCount} edges");
             foreach (var (vertex, neighbours) in graph)
             {
                 foreach (var (neighbour, weight) in neighbours)
